@@ -20,7 +20,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         let vc = ViewController()
-        window.rootViewController = vc
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.navigationBar.topItem?.title = "Recipes"
+        window.rootViewController = navVC
         self.window = window
         self.window?.makeKeyAndVisible()
         
