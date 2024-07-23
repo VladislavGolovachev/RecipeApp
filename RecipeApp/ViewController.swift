@@ -11,8 +11,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        var collectionView = UICollectionView()
-        collectionView.add
+        self.view.backgroundColor = .white
     }
 }
 
