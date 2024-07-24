@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class MealListViewController: UIViewController {
 
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -35,7 +35,7 @@ class ViewController: UIViewController {
 }
 
 //MARK: Constraints
-extension ViewController {
+extension MealListViewController {
     
     func setupConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
@@ -49,7 +49,7 @@ extension ViewController {
     }
 }
 
-extension ViewController: UICollectionViewDataSource {
+extension MealListViewController: UICollectionViewDataSource {
     //FIXME: Needs to change number of rows
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 100
@@ -64,12 +64,14 @@ extension ViewController: UICollectionViewDataSource {
     }
 }
 
-extension ViewController: UICollectionViewDelegateFlowLayout {
+extension MealListViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView,
                        layout collectionViewLayout: UICollectionViewLayout,
                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-            let widthPerItem = Int((collectionView.frame.width - 15) / 2)
+        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        let widthPerItem = Int((collectionView.frame.width - layout.minimumInteritemSpacing
+                                - layout.sectionInset.left - layout.sectionInset.right) / 2)
             return CGSize(width: widthPerItem, height: widthPerItem)
         }
 }
