@@ -19,7 +19,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         
-        let vc = MealListViewController()
+        let builder = ModuleBuilder()
+        
+        let vc = builder.createListModule()
         let navVC = UINavigationController(rootViewController: vc)
         navVC.navigationBar.topItem?.title = "Recipes"
         window.rootViewController = navVC

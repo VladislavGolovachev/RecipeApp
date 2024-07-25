@@ -9,6 +9,9 @@ import UIKit
 
 class MealListViewController: UIViewController {
 
+    var meals: [Meal]?
+    var presenter: MealListPresenter?
+    
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -31,6 +34,8 @@ class MealListViewController: UIViewController {
         self.view.backgroundColor = .white
         self.view.addSubview(collectionView)
         setupConstraints()
+        
+        self.presenter?.getMeals()
     }
 }
 
@@ -52,14 +57,19 @@ extension MealListViewController {
 extension MealListViewController: UICollectionViewDataSource {
     //FIXME: Needs to change number of rows
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 100
+        if let count = meals?.count {
+            return count
+        }
+        return 0
     }
     
     //FIXME: Needs to implement UICollectionViewCell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Recipe", for: indexPath)
-        cell.backgroundColor = .red
-        
+        cell.backgroundColor = UIColor(red: CGFloat.random(in: 0...1),
+                                       green: CGFloat.random(in: 0...1),
+                                       blue: CGFloat.random(in: 0...1),
+                                       alpha: 1)
         return cell
     }
 }
@@ -74,4 +84,21 @@ extension MealListViewController: UICollectionViewDelegateFlowLayout {
                                 - layout.sectionInset.left - layout.sectionInset.right) / 2)
             return CGSize(width: widthPerItem, height: widthPerItem)
         }
+}
+
+extension MealListViewController: MealListViewProtocol {
+    
+    func showList(of meals: [Meal]) {
+        self.meals = meals
+        
+        for meal in meals {
+            print(meal)
+        }
+        
+        self.collectionView.reloadData()
+    }
+    
+    func loadData() {
+        
+    }
 }

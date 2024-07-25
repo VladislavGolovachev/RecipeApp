@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct MealInfoResponse: Decodable {
-    var meals: [MealInfo]
+struct MealResponse: Decodable {
+    var meals: [Meal]
 }
 
-struct MealInfo: Decodable {
+struct Meal: Decodable {
     var id: String
     var name: String
     var photoString: String
