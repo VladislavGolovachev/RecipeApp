@@ -7,19 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8211ED902C557CD2007E901E /* MealResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8211ED8F2C557CD2007E901E /* MealResponse.swift */; };
+		8211ED922C557CEE007E901E /* MealRecipeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8211ED912C557CEE007E901E /* MealRecipeResponse.swift */; };
 		8266A4B12C4FF162007939B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8266A4B02C4FF162007939B1 /* AppDelegate.swift */; };
 		8266A4B32C4FF162007939B1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8266A4B22C4FF162007939B1 /* SceneDelegate.swift */; };
 		8266A4B52C4FF162007939B1 /* MealListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8266A4B42C4FF162007939B1 /* MealListViewController.swift */; };
 		8266A4BA2C4FF168007939B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8266A4B92C4FF168007939B1 /* Assets.xcassets */; };
 		8266A4BD2C4FF168007939B1 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 8266A4BC2C4FF168007939B1 /* Base */; };
 		82A44D872C51882C00324CF6 /* MealRecipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44D862C51882C00324CF6 /* MealRecipe.swift */; };
-		82A44D892C51885D00324CF6 /* Meal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44D882C51885D00324CF6 /* Meal.swift */; };
+		82A44D892C51885D00324CF6 /* MealInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44D882C51885D00324CF6 /* MealInfo.swift */; };
 		82A44D8B2C518BCD00324CF6 /* MealListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44D8A2C518BCD00324CF6 /* MealListPresenter.swift */; };
 		82A44D8E2C519B6400324CF6 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44D8D2C519B6400324CF6 /* NetworkService.swift */; };
 		82A44D942C523D6D00324CF6 /* ModuleBullder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44D932C523D6D00324CF6 /* ModuleBullder.swift */; };
+		82A44DA82C5269F500324CF6 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 82A44DA62C5269F500324CF6 /* DataModel.xcdatamodeld */; };
+		82A44DAC2C526A4D00324CF6 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44DAB2C526A4D00324CF6 /* DataManager.swift */; };
+		82A44DAF2C526A8B00324CF6 /* Meal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44DAD2C526A8B00324CF6 /* Meal+CoreDataClass.swift */; };
+		82A44DB02C526A8B00324CF6 /* Meal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44DAE2C526A8B00324CF6 /* Meal+CoreDataProperties.swift */; };
+		82A44DD52C54243700324CF6 /* MealCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44DD42C54243700324CF6 /* MealCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8211ED8F2C557CD2007E901E /* MealResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MealResponse.swift; path = ../../../../../../../Documents/MealResponse.swift; sourceTree = "<group>"; };
+		8211ED912C557CEE007E901E /* MealRecipeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MealRecipeResponse.swift; path = ../../../../../../../Documents/MealRecipeResponse.swift; sourceTree = "<group>"; };
 		8266A4AD2C4FF162007939B1 /* RecipeApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecipeApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8266A4B02C4FF162007939B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8266A4B22C4FF162007939B1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -28,10 +37,15 @@
 		8266A4BC2C4FF168007939B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8266A4BE2C4FF168007939B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82A44D862C51882C00324CF6 /* MealRecipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealRecipe.swift; sourceTree = "<group>"; };
-		82A44D882C51885D00324CF6 /* Meal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meal.swift; sourceTree = "<group>"; };
+		82A44D882C51885D00324CF6 /* MealInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealInfo.swift; sourceTree = "<group>"; };
 		82A44D8A2C518BCD00324CF6 /* MealListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealListPresenter.swift; sourceTree = "<group>"; };
 		82A44D8D2C519B6400324CF6 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		82A44D932C523D6D00324CF6 /* ModuleBullder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleBullder.swift; sourceTree = "<group>"; };
+		82A44DA72C5269F500324CF6 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		82A44DAB2C526A4D00324CF6 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		82A44DAD2C526A8B00324CF6 /* Meal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Meal+CoreDataClass.swift"; sourceTree = "<group>"; };
+		82A44DAE2C526A8B00324CF6 /* Meal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Meal+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		82A44DD42C54243700324CF6 /* MealCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +59,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8211ED8D2C557CAA007E901E /* NetworkLayer */ = {
+			isa = PBXGroup;
+			children = (
+				8211ED8E2C557CBA007E901E /* NetworkResponses */,
+				82A44D8D2C519B6400324CF6 /* NetworkService.swift */,
+			);
+			path = NetworkLayer;
+			sourceTree = "<group>";
+		};
+		8211ED8E2C557CBA007E901E /* NetworkResponses */ = {
+			isa = PBXGroup;
+			children = (
+				8211ED8F2C557CD2007E901E /* MealResponse.swift */,
+				8211ED912C557CEE007E901E /* MealRecipeResponse.swift */,
+			);
+			path = NetworkResponses;
+			sourceTree = "<group>";
+		};
 		8266A4A42C4FF162007939B1 = {
 			isa = PBXGroup;
 			children = (
@@ -69,7 +101,9 @@
 				82A44D932C523D6D00324CF6 /* ModuleBullder.swift */,
 				82A44D812C5186E800324CF6 /* MealRecipeModule */,
 				82A44D822C51871400324CF6 /* MealListModule */,
-				82A44D8C2C519B3500324CF6 /* ServiceLayer */,
+				82A44DAB2C526A4D00324CF6 /* DataManager.swift */,
+				8211ED8D2C557CAA007E901E /* NetworkLayer */,
+				82A44DA62C5269F500324CF6 /* DataModel.xcdatamodeld */,
 				8266A4B92C4FF168007939B1 /* Assets.xcassets */,
 				8266A4BB2C4FF168007939B1 /* LaunchScreen.storyboard */,
 				8266A4BE2C4FF168007939B1 /* Info.plist */,
@@ -107,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				8266A4B42C4FF162007939B1 /* MealListViewController.swift */,
+				82A44DD42C54243700324CF6 /* MealCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -122,17 +157,11 @@
 		82A44D852C51873900324CF6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				82A44D882C51885D00324CF6 /* Meal.swift */,
+				82A44DAD2C526A8B00324CF6 /* Meal+CoreDataClass.swift */,
+				82A44DAE2C526A8B00324CF6 /* Meal+CoreDataProperties.swift */,
+				82A44D882C51885D00324CF6 /* MealInfo.swift */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		82A44D8C2C519B3500324CF6 /* ServiceLayer */ = {
-			isa = PBXGroup;
-			children = (
-				82A44D8D2C519B6400324CF6 /* NetworkService.swift */,
-			);
-			path = ServiceLayer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -206,11 +235,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				8266A4B52C4FF162007939B1 /* MealListViewController.swift in Sources */,
-				82A44D892C51885D00324CF6 /* Meal.swift in Sources */,
+				82A44DAC2C526A4D00324CF6 /* DataManager.swift in Sources */,
+				82A44DD52C54243700324CF6 /* MealCollectionViewCell.swift in Sources */,
+				82A44D892C51885D00324CF6 /* MealInfo.swift in Sources */,
 				82A44D942C523D6D00324CF6 /* ModuleBullder.swift in Sources */,
 				8266A4B12C4FF162007939B1 /* AppDelegate.swift in Sources */,
 				82A44D872C51882C00324CF6 /* MealRecipe.swift in Sources */,
 				8266A4B32C4FF162007939B1 /* SceneDelegate.swift in Sources */,
+				82A44DA82C5269F500324CF6 /* DataModel.xcdatamodeld in Sources */,
+				8211ED902C557CD2007E901E /* MealResponse.swift in Sources */,
+				82A44DAF2C526A8B00324CF6 /* Meal+CoreDataClass.swift in Sources */,
+				8211ED922C557CEE007E901E /* MealRecipeResponse.swift in Sources */,
+				82A44DB02C526A8B00324CF6 /* Meal+CoreDataProperties.swift in Sources */,
 				82A44D8B2C518BCD00324CF6 /* MealListPresenter.swift in Sources */,
 				82A44D8E2C519B6400324CF6 /* NetworkService.swift in Sources */,
 			);
@@ -361,8 +397,9 @@
 				INFOPLIST_FILE = RecipeApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -376,7 +413,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -392,8 +429,9 @@
 				INFOPLIST_FILE = RecipeApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -407,7 +445,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -433,6 +471,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		82A44DA62C5269F500324CF6 /* DataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				82A44DA72C5269F500324CF6 /* DataModel.xcdatamodel */,
+			);
+			currentVersion = 82A44DA72C5269F500324CF6 /* DataModel.xcdatamodel */;
+			path = DataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 8266A4A52C4FF162007939B1 /* Project object */;
 }

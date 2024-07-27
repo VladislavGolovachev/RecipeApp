@@ -7,15 +7,21 @@
 
 import Foundation
 
-protocol NetworkServiceProtocol {
+protocol NetworkAPIRequestsProtocol {
     func getRandomMeal(completion: @escaping (Result<MealResponse, Error>) -> Void)
     func getMealRecipe()
 }
 
-class NetworkService: NetworkServiceProtocol {
-    
+protocol NetworkDownloadingProtocol {
+    func downloadPhotoData(by urlString: String, completion: @escaping (Result<Data?, Error>) -> Void)
+}
+
+final class NetworkService {
     static let shared = NetworkService()
     private init() {}
+}
+
+extension NetworkService: NetworkAPIRequestsProtocol {
     
     func getRandomMeal(completion: @escaping (Result<MealResponse, any Error>) -> Void) {
         let urlString = "https://www.themealdb.com/api/json/v1/1/random.php"
@@ -41,5 +47,26 @@ class NetworkService: NetworkServiceProtocol {
     
     func getMealRecipe() {
         
+    }
+}
+
+extension NetworkService: NetworkDownloadingProtocol {
+    func downloadPhotoData(by urlString: String, completion: @escaping (Result<Data?, Error>) -> Void) {
+        
+//        let downloadPictureWorkItem = DispatchWorkItem {
+            guard let url = URL(string: urlString) else {return}
+            do {
+                let photoData = try Data(contentsOf: url)
+                completion(.success(photoData))
+                return
+            } catch {
+                completion(.failure(error))
+                return
+            }
+//        }
+//        DispatchQueue.global(qos: .userInitiated).async(execute: downloadPictureWorkItem)
+//        downloadPictureWorkItem.notify(queue: <#T##DispatchQueue#>) {
+//            
+//        }
     }
 }

@@ -7,14 +7,6 @@
 
 import Foundation
 
-struct MealRecipeResponse: Decodable {
-    var recipes: [MealRecipe]
-    
-    private enum CodingKeys: String, CodingKey {
-        case recipes = "meals"
-    }
-}
-
 struct MealRecipe: Decodable {
     var name: String
     var category: String

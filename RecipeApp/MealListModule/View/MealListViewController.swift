@@ -9,8 +9,8 @@ import UIKit
 
 class MealListViewController: UIViewController {
 
-    var meals: [Meal]?
     var presenter: MealListPresenter?
+    var cellSize: CGSize?
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -24,7 +24,7 @@ class MealListViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Recipe")
+        collectionView.register(MealCollectionViewCell.self, forCellWithReuseIdentifier: "Recipe")
         
         return collectionView
     }()
@@ -35,7 +35,17 @@ class MealListViewController: UIViewController {
         self.view.addSubview(collectionView)
         setupConstraints()
         
-        self.presenter?.getMeals()
+        self.presenter?.downloadMeals()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {return}
+        let widthPerItem = Int((collectionView.frame.width - layout.minimumInteritemSpacing
+                                - layout.sectionInset.left - layout.sectionInset.right) / 2.0)
+        
+        if cellSize == nil {
+            cellSize = CGSize(width: widthPerItem, height: widthPerItem)
+        }
     }
 }
 
@@ -48,8 +58,8 @@ extension MealListViewController {
         NSLayoutConstraint.activate([
             self.collectionView.topAnchor.constraint(equalTo: safeArea.topAnchor),
             self.collectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
-            self.collectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            self.collectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+            self.collectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            self.collectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor)
         ])
     }
 }
@@ -57,19 +67,22 @@ extension MealListViewController {
 extension MealListViewController: UICollectionViewDataSource {
     //FIXME: Needs to change number of rows
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let count = meals?.count {
-            return count
-        }
-        return 0
+        return self.presenter?.getMeals().count ?? 0
     }
     
     //FIXME: Needs to implement UICollectionViewCell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Recipe", for: indexPath)
-        cell.backgroundColor = UIColor(red: CGFloat.random(in: 0...1),
-                                       green: CGFloat.random(in: 0...1),
-                                       blue: CGFloat.random(in: 0...1),
-                                       alpha: 1)
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Recipe", for: indexPath) as? MealCollectionViewCell
+        ?? MealCollectionViewCell()
+        if let meal = self.presenter?.getMeals()[indexPath.row] {
+            cell.label.text = meal.name
+            cell.label.textAlignment = .center
+            if let data = meal.photoData {
+                cell.imageView.image = UIImage(data: data)
+            }
+        }
+        
         return cell
     }
 }
@@ -77,28 +90,16 @@ extension MealListViewController: UICollectionViewDataSource {
 extension MealListViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView,
-                       layout collectionViewLayout: UICollectionViewLayout,
-                       sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        let widthPerItem = Int((collectionView.frame.width - layout.minimumInteritemSpacing
-                                - layout.sectionInset.left - layout.sectionInset.right) / 2)
-            return CGSize(width: widthPerItem, height: widthPerItem)
-        }
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+
+        return cellSize ?? CGSizeZero
+    }
 }
 
 extension MealListViewController: MealListViewProtocol {
     
-    func showList(of meals: [Meal]) {
-        self.meals = meals
-        
-        for meal in meals {
-            print(meal)
-        }
-        
+    func showList() {
         self.collectionView.reloadData()
-    }
-    
-    func loadData() {
-        
     }
 }

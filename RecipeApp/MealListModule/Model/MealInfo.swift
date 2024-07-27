@@ -7,14 +7,11 @@
 
 import Foundation
 
-struct MealResponse: Decodable {
-    var meals: [Meal]
-}
-
-struct Meal: Decodable {
+struct MealInfo: Decodable {
     var id: String
     var name: String
     var photoString: String
+    var photoData: Data?
     
     private enum CodingKeys: String, CodingKey {
         case id = "idMeal"
