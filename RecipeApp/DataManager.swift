@@ -9,7 +9,9 @@ import Foundation
 import CoreData
 
 protocol CoreDataManagerProtocol {
-    func fetchMeals() -> [Meal]?
+    func fetchMeal(with number: Int) -> Meal?
+    func updateMeal(of number: Int, with data: Data)
+    func mealsCount() -> Int
     func persist(_ meals: [MealInfo])
     func clear()
 }
@@ -17,65 +19,117 @@ protocol CoreDataManagerProtocol {
 final class DataManager {
     static let shared = DataManager()
     private init() {}
-    private let persistentContainer = NSPersistentContainer(name: "MealContainer")
-
-    private var _meals: [MealInfo]?
-    var meals: [MealInfo]? {
-        _meals
-    }
-    func save(_ meals: [MealInfo]) {
-        _meals = meals
-    }
+    private lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "DataModel")
+        container.loadPersistentStores { _, error in
+            if let error {
+                fatalError("Unable to load persistent stores: \(error)")
+            }
+        }
+        return container
+    }()
+    
+    private lazy var backgroundContext: NSManagedObjectContext = {
+        let context = self.persistentContainer.newBackgroundContext()
+        context.persistentStoreCoordinator = self.persistentContainer.viewContext.persistentStoreCoordinator
+        return context
+    }()
 }
 
 extension DataManager: CoreDataManagerProtocol {
-    private func insert(meal: Meal) {
-        let managedObjectContext = self.persistentContainer.viewContext
-        guard let entity = NSEntityDescription.entity(forEntityName: "Meal", in: managedObjectContext) else {return}
-        let mealObject = NSManagedObject(entity: entity, insertInto: managedObjectContext)
-        
-        mealObject.setValue(meal.id, forKey: Meal.CodingKeys.id.rawValue)
-        mealObject.setValue(meal.name, forKey: Meal.CodingKeys.name.rawValue)
-        mealObject.setValue(meal.photoData, forKey: Meal.CodingKeys.photoData.rawValue)
-        
-        do {
-            try managedObjectContext.save()
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
     
-    func fetchMeals() -> [Meal]? {
-        let managedObjectContext = self.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Meal")
+    func fetchMeal(with number: Int) -> Meal? {
+        let fetchRequest = Meal.fetchRequest()
+        let predicate = NSPredicate(format: "number == %d", number)
+        fetchRequest.predicate = predicate
         
-        do {
-            let meals = try managedObjectContext.fetch(fetchRequest)
-            return meals as? [Meal]
+        var meal: Meal?
+        
+        self.backgroundContext.performAndWait {
+            do {
+                let meals = try self.backgroundContext.fetch(fetchRequest)
+                meal = meals.first
+            }
+            catch {
+                print(error.localizedDescription)
+            }
         }
-        catch {
-            print(error.localizedDescription)
-            return nil
-        }
+        return meal
     }
     
     func persist(_ meals: [MealInfo]) {
-        
+        for (index, meal) in meals.enumerated() {
+            self.insert(meal: meal, with: index)
+        }
+        self.backgroundContext.perform {
+            do {
+                try self.backgroundContext.save()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
     
     func clear() {
-        let managedObjectContext = self.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Meal")
-        
-        do {
-            let meals = try managedObjectContext.fetch(fetchRequest)
-            for meal in meals {
-                managedObjectContext.delete(meal)
+        let fetchRequest = Meal.fetchRequest()
+        self.backgroundContext.perform {
+            do {
+                let meals = try self.backgroundContext.fetch(fetchRequest)
+                for meal in meals {
+                    self.backgroundContext.delete(meal)
+                }
+            }
+            catch {
+                print(error.localizedDescription)
             }
         }
-        catch {
-            print(error.localizedDescription)
-            return
+    }
+    
+    func updateMeal(of number: Int, with data: Data) {
+        let fetchRequest = Meal.fetchRequest()
+        let predicate = NSPredicate(format: "number == %d", number)
+        fetchRequest.predicate = predicate
+
+        var meal = [Meal]()
+        self.backgroundContext.perform {
+            do {
+                meal = try self.backgroundContext.fetch(fetchRequest)
+                meal.first?.photoData = data
+                try self.backgroundContext.save()
+                
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func mealsCount() -> Int {
+        let fetchRequest = Meal.fetchRequest()
+        var count = 0
+        
+        self.backgroundContext.performAndWait {
+            do {
+                count = try self.backgroundContext.count(for: fetchRequest)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+
+        return count
+    }
+}
+
+extension DataManager {
+    
+    private func insert(meal: MealInfo, with number: Int) {
+        self.backgroundContext.perform {
+            guard let entity = NSEntityDescription.entity(forEntityName: "Meal", in: self.backgroundContext) else {return}
+            let mealObject = NSManagedObject(entity: entity, insertInto: self.backgroundContext)
+            
+            mealObject.setValue(meal.id, forKey: Meal.CodingKeys.id.rawValue)
+            mealObject.setValue(meal.name, forKey: Meal.CodingKeys.name.rawValue)
+            mealObject.setValue(meal.photoData, forKey: Meal.CodingKeys.photoData.rawValue)
+            mealObject.setValue(number, forKey: Meal.CodingKeys.number.rawValue)
         }
     }
 }

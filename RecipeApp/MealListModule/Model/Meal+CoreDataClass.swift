@@ -15,5 +15,6 @@ public class Meal: NSManagedObject {
         case id = "id"
         case name = "name"
         case photoData = "photoData"
+        case number = "number"
     }
 }

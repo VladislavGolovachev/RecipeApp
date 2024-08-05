@@ -18,7 +18,8 @@ extension Meal {
 
     @NSManaged public var id: String
     @NSManaged public var name: String
-    @NSManaged public var photoData: Data
+    @NSManaged public var number: Int32
+    @NSManaged public var photoData: Data?
 
 }
 

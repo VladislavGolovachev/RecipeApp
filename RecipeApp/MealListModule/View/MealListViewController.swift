@@ -31,10 +31,11 @@ class MealListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .black
         self.view.addSubview(collectionView)
         setupConstraints()
         
+        self.collectionView.isHidden = true
         self.presenter?.downloadMeals()
     }
     
@@ -65,17 +66,18 @@ extension MealListViewController {
 }
 
 extension MealListViewController: UICollectionViewDataSource {
+    
     //FIXME: Needs to change number of rows
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.presenter?.getMeals().count ?? 0
+        return self.presenter?.getMealCount() ?? 0
     }
     
     //FIXME: Needs to implement UICollectionViewCell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Recipe", for: indexPath)
+        as? MealCollectionViewCell ?? MealCollectionViewCell()
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Recipe", for: indexPath) as? MealCollectionViewCell
-        ?? MealCollectionViewCell()
-        if let meal = self.presenter?.getMeals()[indexPath.row] {
+        if let meal = self.presenter?.getMeal(of: indexPath.row) {
             cell.label.text = meal.name
             cell.label.textAlignment = .center
             if let data = meal.photoData {
@@ -101,5 +103,10 @@ extension MealListViewController: MealListViewProtocol {
     
     func showList() {
         self.collectionView.reloadData()
+        self.collectionView.isHidden = false
+    }
+    
+    func updateList(at indexPath: IndexPath) {
+        self.collectionView.reloadItems(at: [indexPath])
     }
 }

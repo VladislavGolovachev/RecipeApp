@@ -30,7 +30,7 @@ class MealCollectionViewCell: UICollectionViewCell {
             self.label.topAnchor.constraint(equalTo: self.imageView.bottomAnchor)
         ])
         
-        let wholeSize = CGFloat(Int(frame.size.height * 0.08))
+        let wholeSize = CGFloat(Int(frame.size.height * 0.07))
         self.label.font = self.label.font.withSize(wholeSize)
     }
     

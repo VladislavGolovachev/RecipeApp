@@ -5,16 +5,17 @@
 //  Created by Владислав Головачев on 25.07.2024.
 //
 
-import Foundation
+import UIKit
 
 protocol MealListViewProtocol: AnyObject{
     func showList()
+    func updateList(at indexPath: IndexPath)
 }
 
 protocol MealListViewPresenterProtocol: AnyObject {
     init(view: MealListViewController)
     func downloadMeals()
-    func getMeals() -> [MealInfo]
+    func getMeal(of number: Int) -> Meal?
     func didSelectMeal(with id: Int)
 }
 
@@ -30,7 +31,7 @@ class MealListPresenter: MealListViewPresenterProtocol {
         var meals = [MealInfo]()
         let group = DispatchGroup()
         
-        for _ in 1...24 {
+        for _ in 1...40 {
             
             group.enter()
             NetworkService.shared.getRandomMeal { result in
@@ -46,33 +47,37 @@ class MealListPresenter: MealListViewPresenterProtocol {
             }
         }
         
-        group.notify(queue: .main) {
+        group.notify(queue: .global(qos: .userInitiated)) {
 
             if meals.isEmpty {
-            } else {
-                DataManager.shared.save(meals)
                 DispatchQueue.main.async {
                     self.view?.showList()
                 }
-                
-                self.downloadPictures(for: meals) { result in
-                    switch result {
-                    case .success(let mealsWithPics):
-                        DispatchQueue.global().async {
-                            DataManager.shared.clear()
-                            DataManager.shared.persist(meals)
-                        }
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                    }
+            } else {
+                let queue = DispatchQueue(label: "golovachev-vladislavQueue", qos: .userInitiated)
+                queue.async {
+                    DataManager.shared.clear()
                 }
+                queue.asyncAndWait {
+                    DataManager.shared.persist(meals)
+                }
+                DispatchQueue.main.asyncAndWait {
+                    self.view?.showList()
+                }
+                self.downloadPictures(for: meals)
             }
         }
     }
     
     //FIXME: Fix to have access to local files
-    func getMeals() -> [MealInfo] {
-        return DataManager.shared.meals ?? [MealInfo]()
+    func getMeal(of number: Int) -> Meal? {
+        let meal = DataManager.shared.fetchMeal(with: number)
+        return meal
+    }
+    
+    func getMealCount() -> Int {
+        let count = DataManager.shared.mealsCount()
+        return count
     }
 
     func didSelectMeal(with id: Int) {
@@ -82,26 +87,40 @@ class MealListPresenter: MealListViewPresenterProtocol {
 
 extension MealListPresenter {
     
-    private func downloadPictures(for meals: [MealInfo], completion: @escaping (Result<[MealInfo], Error>) -> Void) {
-        var mealsCopy = meals
-        
+    private func downloadPictures(for meals: [MealInfo]) {
         for (index, meal) in meals.enumerated() {
-            let downloadPictureWorkItem = DispatchWorkItem {
-                NetworkService.shared.downloadPhotoData(by: meal.photoString) { result in
-                    switch result {
-                    case .success(let data):
-                        mealsCopy[index].photoData = data
-                    case .failure(let error):
-                        print(error.localizedDescription)
+            NetworkService.shared.downloadPhotoData(by: meal.photoString) { result in
+                
+                switch result {
+                case .success(let data):
+                    self.updateMealData(index: index, data: data) {
+                        self.view?.updateList(at: IndexPath(row: index, section: 0))
                     }
+                case .failure(let error):
+                    print(error.localizedDescription)
                 }
             }
-            
-            DispatchQueue.global(qos: .userInitiated).async(execute: downloadPictureWorkItem)
-            downloadPictureWorkItem.notify(queue: .main) {
-                DataManager.shared.save(mealsCopy)
-                self.view?.showList()
+        }
+    }
+    
+    private func updateMealData(index: Int, data: Data?, completion: @escaping () -> Void) {
+        let concurrentQueue = DispatchQueue(label: "concurrentQueue",
+                                            qos: .userInitiated,
+                                            attributes: .concurrent)
+        let workItemUpdate = DispatchWorkItem {
+            if let data, let compressedData = self.compressedPictureData(of: data) {
+                DataManager.shared.updateMeal(of: index,
+                                              with: compressedData)
             }
         }
+        concurrentQueue.async(execute: workItemUpdate)
+        
+        workItemUpdate.notify(queue: .main) {
+            completion()
+        }
+    }
+    
+    private func compressedPictureData(of data: Data) -> Data? {
+        return UIImage(data: data)?.jpegData(compressionQuality: 0.6)
     }
 }
