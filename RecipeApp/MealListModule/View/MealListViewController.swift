@@ -29,6 +29,7 @@ class MealListViewController: UIViewController {
         
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.prefetchDataSource = self
         collectionView.refreshControl = refreshControl
         
         collectionView.register(MealCollectionViewCell.self, forCellWithReuseIdentifier: "Recipe")
@@ -43,7 +44,7 @@ class MealListViewController: UIViewController {
         setupConstraints()
         
         self.collectionView.isHidden = true
-        self.presenter?.downloadMeals()
+        self.presenter?.downloadMeals(isDataToBeOverwritten: true)
     }
     
     override func viewDidLayoutSubviews() {
@@ -72,19 +73,17 @@ extension MealListViewController {
     }
     
     @objc func refreshAction(_ sender: UIRefreshControl) {
-        self.presenter?.downloadMeals()
+        self.presenter?.downloadMeals(isDataToBeOverwritten: true)
         sender.endRefreshing()
     }
 }
 
 extension MealListViewController: UICollectionViewDataSource {
     
-    //FIXME: Needs to change number of rows
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.presenter?.getMealCount() ?? 0
     }
     
-    //FIXME: Needs to implement UICollectionViewCell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Recipe", for: indexPath)
         as? MealCollectionViewCell ?? MealCollectionViewCell()
@@ -119,15 +118,27 @@ extension MealListViewController: MealListViewProtocol {
         self.collectionView.isHidden = false
     }
     
-    func updateList(at indexPath: IndexPath) {
+    func updateList(at row: Int) {
+        let indexPath = IndexPath(row: row, section: 0)
         self.collectionView.reloadItems(at: [indexPath])
     }
     
-    func showAlertNetworkConnectionError() {
-        let alert = UIAlertController(title: "No network connection",
-                                      message: "Connect your device to the network to be able to load new meals",
+    func showAlertLoadingMealsError() {
+        let alert = UIAlertController(title: "Loading error",
+                                      message: "Unable to load new recipes",
                                       preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Ok", style: .default))
         self.present(alert, animated: true)
+    }
+}
+
+extension MealListViewController: UICollectionViewDataSourcePrefetching {
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        guard let maxRow = indexPaths.max(by: {$0.row < $1.row})?.row else {return}
+        let count = self.presenter?.getMealCount() ?? maxRow
+        
+        if maxRow >= count - 1 {
+            self.presenter?.downloadMeals(isAlertShouldBeShown: false)
+        }
     }
 }

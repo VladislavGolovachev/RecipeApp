@@ -59,7 +59,6 @@ extension DataManager: CoreDataManagerProtocol {
     
     func persist(_ meals: [MealInfo]) {
         let count = self.mealsCount()
-        print(count)
         for (index, meal) in meals.enumerated() {
             self.insert(meal: meal, with: count + index)
         }

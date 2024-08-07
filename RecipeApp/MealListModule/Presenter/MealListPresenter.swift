@@ -9,13 +9,13 @@ import UIKit
 
 protocol MealListViewProtocol: AnyObject {
     func showList()
-    func updateList(at indexPath: IndexPath)
-    func showAlertNetworkConnectionError()
+    func updateList(at row: Int)
+    func showAlertLoadingMealsError()
 }
 
 protocol MealListViewPresenterProtocol: AnyObject {
     init(view: MealListViewController)
-    func downloadMeals(isDataToBeOverwritten: Bool)
+    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool)
     func getMeal(of number: Int) -> Meal?
     func didSelectMeal(with id: Int)
 }
@@ -28,7 +28,7 @@ class MealListPresenter: MealListViewPresenterProtocol {
         self.view = view
     }
     
-    func downloadMeals(isDataToBeOverwritten: Bool = true) {
+    func downloadMeals(isDataToBeOverwritten: Bool = false, isAlertShouldBeShown: Bool = true) {
         var meals = [MealInfo]()
         let group = DispatchGroup()
         
@@ -53,16 +53,15 @@ class MealListPresenter: MealListViewPresenterProtocol {
             if isRequestSuccessful {
                 self.saveToLocal(meals, with: isDataToBeOverwritten)
             }
-            DispatchQueue.main.asyncAndWait {
+            DispatchQueue.main.async {
                 self.view?.showList()
             }
             if isRequestSuccessful {
                 self.downloadPictures(for: meals)
             }
-            
-            if !isRequestSuccessful {
+            if isAlertShouldBeShown && !isRequestSuccessful {
                 DispatchQueue.main.async {
-                    self.view?.showAlertNetworkConnectionError()
+                    self.view?.showAlertLoadingMealsError()
                 }
             }
         }
@@ -99,14 +98,13 @@ extension MealListPresenter {
     
     private func downloadPictures(for meals: [MealInfo]) {
         let count = self.getMealCount()
-        print(meals.count, count)
         for (index, meal) in meals.enumerated() {
             NetworkService.shared.downloadPhotoData(by: meal.photoString) { result in
                 
                 switch result {
                 case .success(let data):
                     self.updateMealData(index: index + count - 18, data: data) {
-                        self.view?.updateList(at: IndexPath(row: index + count - 18, section: 0))
+                        self.view?.updateList(at: index + count - 18)
                     }
                 case .failure(let error):
                     print(error.localizedDescription)
@@ -128,8 +126,6 @@ extension MealListPresenter {
         concurrentQueue.async(execute: workItemUpdate)
         
         workItemUpdate.notify(queue: .main) {
-            let meal = DataManager.shared.fetchMeal(of: index)
-            print(index, meal?.photoData)
             completion()
         }
     }

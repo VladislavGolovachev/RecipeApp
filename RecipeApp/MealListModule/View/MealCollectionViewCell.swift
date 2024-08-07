@@ -8,7 +8,7 @@
 import UIKit
 
 class MealCollectionViewCell: UICollectionViewCell {
-    lazy var label = UILabel()
+    var label = UILabel()
     var imageView = UIImageView()
     
     override init(frame: CGRect) {
