@@ -21,8 +21,15 @@ class MealListViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
+        collectionView.backgroundColor = .black
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .white
+        refreshControl.addTarget(self, action: #selector(refreshAction), for: .valueChanged)
+        
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.refreshControl = refreshControl
         
         collectionView.register(MealCollectionViewCell.self, forCellWithReuseIdentifier: "Recipe")
         
@@ -63,6 +70,11 @@ extension MealListViewController {
             self.collectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor)
         ])
     }
+    
+    @objc func refreshAction(_ sender: UIRefreshControl) {
+        self.presenter?.downloadMeals()
+        sender.endRefreshing()
+    }
 }
 
 extension MealListViewController: UICollectionViewDataSource {
@@ -79,6 +91,7 @@ extension MealListViewController: UICollectionViewDataSource {
         
         if let meal = self.presenter?.getMeal(of: indexPath.row) {
             cell.label.text = meal.name
+            cell.label.textColor = .white
             cell.label.textAlignment = .center
             if let data = meal.photoData {
                 cell.imageView.image = UIImage(data: data)
@@ -108,5 +121,13 @@ extension MealListViewController: MealListViewProtocol {
     
     func updateList(at indexPath: IndexPath) {
         self.collectionView.reloadItems(at: [indexPath])
+    }
+    
+    func showAlertNetworkConnectionError() {
+        let alert = UIAlertController(title: "No network connection",
+                                      message: "Connect your device to the network to be able to load new meals",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel))
+        self.present(alert, animated: true)
     }
 }

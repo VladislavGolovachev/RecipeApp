@@ -24,6 +24,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let vc = builder.createListModule()
         let navVC = UINavigationController(rootViewController: vc)
         navVC.navigationBar.topItem?.title = "Recipes"
+        navVC.navigationBar.backgroundColor = .black
+        navVC.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navVC.navigationBar.barTintColor = .darkGray
         window.rootViewController = navVC
         self.window = window
         self.window?.makeKeyAndVisible()

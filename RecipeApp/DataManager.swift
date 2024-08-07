@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 
 protocol CoreDataManagerProtocol {
-    func fetchMeal(with number: Int) -> Meal?
+    func fetchMeal(of number: Int) -> Meal?
     func updateMeal(of number: Int, with data: Data)
     func mealsCount() -> Int
     func persist(_ meals: [MealInfo])
@@ -38,7 +38,7 @@ final class DataManager {
 
 extension DataManager: CoreDataManagerProtocol {
     
-    func fetchMeal(with number: Int) -> Meal? {
+    func fetchMeal(of number: Int) -> Meal? {
         let fetchRequest = Meal.fetchRequest()
         let predicate = NSPredicate(format: "number == %d", number)
         fetchRequest.predicate = predicate
@@ -58,8 +58,10 @@ extension DataManager: CoreDataManagerProtocol {
     }
     
     func persist(_ meals: [MealInfo]) {
+        let count = self.mealsCount()
+        print(count)
         for (index, meal) in meals.enumerated() {
-            self.insert(meal: meal, with: index)
+            self.insert(meal: meal, with: count + index)
         }
         self.backgroundContext.perform {
             do {
