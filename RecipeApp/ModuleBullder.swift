@@ -8,21 +8,23 @@
 import UIKit
 
 protocol ModuleBuilderProtocol {
-    func createListModule() -> UIViewController
-    func createRecipeModule() -> UIViewController
+    func createMealListModule(router: RouterProtocol) -> UIViewController
+    func createMealRecipeModule(router: Router, mealRecipe: MealRecipe) -> UIViewController
 }
 
 class ModuleBuilder: ModuleBuilderProtocol {
-    func createListModule() -> UIViewController {
+    func createMealListModule(router: RouterProtocol) -> UIViewController {
         let vc = MealListViewController()
-        let presenter = MealListPresenter(view: vc)
+        let presenter = MealListPresenter(view: vc, router: router)
         vc.presenter = presenter
         
         return vc
     }
     
-    func createRecipeModule() -> UIViewController {
-        let vc = UIViewController()
+    func createMealRecipeModule(router: Router, mealRecipe: MealRecipe) -> UIViewController {
+        let vc = MealRecipeViewController()
+        let presenter = MealRecipePresenter(router: router, mealRecipe: mealRecipe)
+        vc.presenter = presenter
         
         return vc
     }

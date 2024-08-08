@@ -10,25 +10,28 @@ import UIKit
 protocol MealListViewProtocol: AnyObject {
     func showList()
     func updateList(at row: Int)
-    func showAlertLoadingMealsError()
+    func showAlert(message: String)
 }
 
 protocol MealListViewPresenterProtocol: AnyObject {
-    init(view: MealListViewController)
+    init(view: MealListViewProtocol, router: RouterProtocol)
     func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool)
     func getMeal(of number: Int) -> Meal?
-    func didSelectMeal(with id: Int)
+    func getMealCount() -> Int
+    func goToRecipeScreen(with number: Int)
 }
 
 class MealListPresenter: MealListViewPresenterProtocol {
     
     weak var view: MealListViewProtocol?
+    var router: RouterProtocol?
     
-    required init(view: MealListViewController) {
+    required init(view: MealListViewProtocol, router: RouterProtocol) {
         self.view = view
+        self.router = router
     }
     
-    func downloadMeals(isDataToBeOverwritten: Bool = false, isAlertShouldBeShown: Bool = true) {
+    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool) {
         var meals = [MealInfo]()
         let group = DispatchGroup()
         
@@ -61,7 +64,7 @@ class MealListPresenter: MealListViewPresenterProtocol {
             }
             if isAlertShouldBeShown && !isRequestSuccessful {
                 DispatchQueue.main.async {
-                    self.view?.showAlertLoadingMealsError()
+                    self.view?.showAlert(message: "Unable to load new recipes")
                 }
             }
         }
@@ -77,8 +80,26 @@ class MealListPresenter: MealListViewPresenterProtocol {
         return count
     }
 
-    func didSelectMeal(with id: Int) {
-        print("Go to the next screen")
+    func goToRecipeScreen(with number: Int) {
+        guard let meal = DataManager.shared.fetchMeal(of: number) else {return}
+        let id = meal.id
+        NetworkService.shared.getMealRecipe(of: id) { result in
+            
+            switch result {
+                
+            case .success(let mealRecipeResponse):
+                guard let mealRecipe = mealRecipeResponse.recipes.first else {return}
+                DispatchQueue.main.async {
+                    self.router?.showMealRecipeController(mealRecipe: mealRecipe)
+                }
+                
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    print(error.localizedDescription)
+                    self.view?.showAlert(message: "Unable to show recipe")
+                }
+            }
+        }
     }
 }
 

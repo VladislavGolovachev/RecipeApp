@@ -9,7 +9,7 @@ import Foundation
 
 protocol NetworkAPIRequestsProtocol {
     func getRandomMeal(completion: @escaping (Result<MealResponse, Error>) -> Void)
-    func getMealRecipe()
+    func getMealRecipe(of id: String, completion: @escaping (Result<MealRecipeResponse, Error>) -> Void)
 }
 
 protocol NetworkDownloadingProtocol {
@@ -45,8 +45,27 @@ extension NetworkService: NetworkAPIRequestsProtocol {
         dataTask.resume()
     }
     
-    func getMealRecipe() {
+    func getMealRecipe(of id: String, completion: @escaping (Result<MealRecipeResponse, Error>) -> Void) {
+        let urlString = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + id
+        guard let url = URL(string: urlString) else {return}
         
+        let dataTask = URLSession.shared.dataTask(with: url) { data, _, error in
+            if let error {
+                completion(.failure(error))
+                return
+            }
+            
+            if let data {
+                do {
+                    let mealRecipeResponse = try JSONDecoder().decode(MealRecipeResponse.self, from: data)
+                    completion(.success(mealRecipeResponse))
+                    
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+        dataTask.resume()
     }
 }
 

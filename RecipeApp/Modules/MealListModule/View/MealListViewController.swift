@@ -9,7 +9,7 @@ import UIKit
 
 class MealListViewController: UIViewController {
 
-    var presenter: MealListPresenter?
+    var presenter: MealListViewPresenterProtocol?
     var cellSize: CGSize?
     
     lazy var collectionView: UICollectionView = {
@@ -44,7 +44,7 @@ class MealListViewController: UIViewController {
         setupConstraints()
         
         self.collectionView.isHidden = true
-        self.presenter?.downloadMeals(isDataToBeOverwritten: true)
+        self.presenter?.downloadMeals(isDataToBeOverwritten: true, isAlertShouldBeShown: true)
     }
     
     override func viewDidLayoutSubviews() {
@@ -73,7 +73,7 @@ extension MealListViewController {
     }
     
     @objc func refreshAction(_ sender: UIRefreshControl) {
-        self.presenter?.downloadMeals(isDataToBeOverwritten: true)
+        self.presenter?.downloadMeals(isDataToBeOverwritten: true, isAlertShouldBeShown: true)
         sender.endRefreshing()
     }
 }
@@ -99,6 +99,11 @@ extension MealListViewController: UICollectionViewDataSource {
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let index = indexPath.row
+        self.presenter?.goToRecipeScreen(with: index)
+    }
 }
 
 extension MealListViewController: UICollectionViewDelegateFlowLayout {
@@ -123,9 +128,9 @@ extension MealListViewController: MealListViewProtocol {
         self.collectionView.reloadItems(at: [indexPath])
     }
     
-    func showAlertLoadingMealsError() {
+    func showAlert(message: String) {
         let alert = UIAlertController(title: "Loading error",
-                                      message: "Unable to load new recipes",
+                                      message: message,
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Ok", style: .default))
         self.present(alert, animated: true)
@@ -138,7 +143,7 @@ extension MealListViewController: UICollectionViewDataSourcePrefetching {
         let count = self.presenter?.getMealCount() ?? maxRow
         
         if maxRow >= count - 1 {
-            self.presenter?.downloadMeals(isAlertShouldBeShown: false)
+            self.presenter?.downloadMeals(isDataToBeOverwritten: false, isAlertShouldBeShown: false)
         }
     }
 }
