@@ -47,6 +47,7 @@ extension NetworkService: NetworkAPIRequestsProtocol {
     
     func getMealRecipe(of id: String, completion: @escaping (Result<MealRecipeResponse, Error>) -> Void) {
         let urlString = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=" + id
+        print(urlString)
         guard let url = URL(string: urlString) else {return}
         
         let dataTask = URLSession.shared.dataTask(with: url) { data, _, error in
@@ -59,8 +60,8 @@ extension NetworkService: NetworkAPIRequestsProtocol {
                 do {
                     let mealRecipeResponse = try JSONDecoder().decode(MealRecipeResponse.self, from: data)
                     completion(.success(mealRecipeResponse))
-                    
                 } catch {
+                    print((error as NSError).description)
                     completion(.failure(error))
                 }
             }

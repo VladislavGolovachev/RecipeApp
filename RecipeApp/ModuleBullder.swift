@@ -23,7 +23,7 @@ class ModuleBuilder: ModuleBuilderProtocol {
     
     func createMealRecipeModule(router: Router, mealRecipe: MealRecipe) -> UIViewController {
         let vc = MealRecipeViewController()
-        let presenter = MealRecipePresenter(router: router, mealRecipe: mealRecipe)
+        let presenter = MealRecipePresenter(view: vc, router: router, mealRecipe: mealRecipe)
         vc.presenter = presenter
         
         return vc

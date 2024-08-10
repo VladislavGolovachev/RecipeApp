@@ -11,7 +11,7 @@ protocol RouterProtocol {
     init(navigationController: UINavigationController, moduleBuilder: ModuleBuilderProtocol)
     func initiateRootController()
     func showMealRecipeController(mealRecipe: MealRecipe)
-    func showSourceController()
+    func showWebSourceController(link: String)
 }
 
 final class Router: RouterProtocol {
@@ -33,8 +33,8 @@ final class Router: RouterProtocol {
         self.navigationController.pushViewController(mealRecipeVC, animated: true)
     }
     
-    func showSourceController() {
-        let sourceVC = SourceViewController()
+    func showWebSourceController(link: String) {
+        let sourceVC = WebSourceViewController(link: link)
         self.navigationController.pushViewController(sourceVC, animated: true)
     }
 }

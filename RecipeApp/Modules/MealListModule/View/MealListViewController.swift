@@ -21,10 +21,10 @@ class MealListViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
-        collectionView.backgroundColor = .black
+        collectionView.backgroundColor = MealListConstants.Color.background
         
         let refreshControl = UIRefreshControl()
-        refreshControl.tintColor = .white
+        refreshControl.tintColor = MealListConstants.Color.refreshControl
         refreshControl.addTarget(self, action: #selector(refreshAction), for: .valueChanged)
         
         collectionView.dataSource = self
@@ -32,14 +32,14 @@ class MealListViewController: UIViewController {
         collectionView.prefetchDataSource = self
         collectionView.refreshControl = refreshControl
         
-        collectionView.register(MealCollectionViewCell.self, forCellWithReuseIdentifier: "Recipe")
+        collectionView.register(MealCollectionViewCell.self, forCellWithReuseIdentifier: "Meal")
         
         return collectionView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .black
+        self.view.backgroundColor = MealListConstants.Color.background
         self.view.addSubview(collectionView)
         setupConstraints()
         
@@ -85,12 +85,12 @@ extension MealListViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Recipe", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Meal", for: indexPath)
         as? MealCollectionViewCell ?? MealCollectionViewCell()
         
         if let meal = self.presenter?.getMeal(of: indexPath.row) {
             cell.label.text = meal.name
-            cell.label.textColor = .white
+            cell.label.textColor = MealListConstants.Color.text
             cell.label.textAlignment = .center
             if let data = meal.photoData {
                 cell.imageView.image = UIImage(data: data)

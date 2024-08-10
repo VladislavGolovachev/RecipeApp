@@ -12,7 +12,7 @@ struct MealRecipe: Decodable {
     var category: String
     var area: String
     var instruction: String
-    var sourceLink: String
+    var sourceLink: String?
     lazy var ingredients: [Ingredient] = {
         var array = [
             Ingredient(ingredient: ingredient1, measure: measure1),
@@ -36,25 +36,18 @@ struct MealRecipe: Decodable {
             Ingredient(ingredient: ingredient19, measure: measure19),
             Ingredient(ingredient: ingredient20, measure: measure20)
                ]
-        //FIXME: Remove extra ingredients
-//        var index = array.firstIndex { item in
-//            return item.ingredient == "" && item.measure == ""
-//        }
-//        if let index {
-//            array.removeSubrange(index...array.count)
-//        }
         return array
     }()
     
     private var ingredient1, ingredient2, ingredient3, ingredient4, ingredient5,
                 ingredient6, ingredient7, ingredient8, ingredient9, ingredient10,
                 ingredient11, ingredient12, ingredient13, ingredient14, ingredient15,
-                ingredient16, ingredient17, ingredient18, ingredient19, ingredient20: String
+                ingredient16, ingredient17, ingredient18, ingredient19, ingredient20: String?
     
     private var measure1, measure2, measure3, measure4, measure5,
                 measure6, measure7, measure8, measure9, measure10,
                 measure11, measure12, measure13, measure14, measure15,
-                measure16, measure17, measure18, measure19, measure20: String
+                measure16, measure17, measure18, measure19, measure20: String?
         
     private enum CodingKeys: String, CodingKey {
         case name = "strMeal"
@@ -86,6 +79,13 @@ struct MealRecipe: Decodable {
 }
 
 struct Ingredient {
-    var ingredient: String
-    var measure: String
+    var ingredient: String?
+    var measure: String?
+}
+
+enum MealAttribute {
+    case name
+    case category
+    case area
+    case instruction
 }

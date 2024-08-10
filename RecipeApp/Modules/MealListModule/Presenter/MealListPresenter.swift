@@ -83,10 +83,12 @@ class MealListPresenter: MealListViewPresenterProtocol {
     func goToRecipeScreen(with number: Int) {
         guard let meal = DataManager.shared.fetchMeal(of: number) else {return}
         let id = meal.id
+        print(Thread.current)
         NetworkService.shared.getMealRecipe(of: id) { result in
             
+            print(Thread.current)
+            print("RecipeScreen")
             switch result {
-                
             case .success(let mealRecipeResponse):
                 guard let mealRecipe = mealRecipeResponse.recipes.first else {return}
                 DispatchQueue.main.async {
@@ -94,8 +96,8 @@ class MealListPresenter: MealListViewPresenterProtocol {
                 }
                 
             case .failure(let error):
+                print(error.localizedDescription)
                 DispatchQueue.main.async {
-                    print(error.localizedDescription)
                     self.view?.showAlert(message: "Unable to show recipe")
                 }
             }
@@ -121,7 +123,7 @@ extension MealListPresenter {
         let count = self.getMealCount()
         for (index, meal) in meals.enumerated() {
             NetworkService.shared.downloadPhotoData(by: meal.photoString) { result in
-                
+                print("Downloading pictures \(index)")
                 switch result {
                 case .success(let data):
                     self.updateMealData(index: index + count - 18, data: data) {

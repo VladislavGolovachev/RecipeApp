@@ -10,7 +10,7 @@
 		8211ED902C557CD2007E901E /* MealResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8211ED8F2C557CD2007E901E /* MealResponse.swift */; };
 		8211ED922C557CEE007E901E /* MealRecipeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8211ED912C557CEE007E901E /* MealRecipeResponse.swift */; };
 		825A64412C65757800A60C6E /* MealRecipePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825A64402C65757800A60C6E /* MealRecipePresenter.swift */; };
-		825A64442C6578EA00A60C6E /* SourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825A64432C6578EA00A60C6E /* SourceViewController.swift */; };
+		825A64442C6578EA00A60C6E /* WebSourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825A64432C6578EA00A60C6E /* WebSourceViewController.swift */; };
 		8266A4B12C4FF162007939B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8266A4B02C4FF162007939B1 /* AppDelegate.swift */; };
 		8266A4B32C4FF162007939B1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8266A4B22C4FF162007939B1 /* SceneDelegate.swift */; };
 		8266A4B52C4FF162007939B1 /* MealListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8266A4B42C4FF162007939B1 /* MealListViewController.swift */; };
@@ -26,6 +26,9 @@
 		82A44DAF2C526A8B00324CF6 /* Meal+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44DAD2C526A8B00324CF6 /* Meal+CoreDataClass.swift */; };
 		82A44DB02C526A8B00324CF6 /* Meal+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44DAE2C526A8B00324CF6 /* Meal+CoreDataProperties.swift */; };
 		82A44DD52C54243700324CF6 /* MealCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A44DD42C54243700324CF6 /* MealCollectionViewCell.swift */; };
+		82A80EAB2C664263005CDDB5 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A80EAA2C664263005CDDB5 /* Extensions.swift */; };
+		82A80EB02C6645B4005CDDB5 /* MealListConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A80EAF2C6645B4005CDDB5 /* MealListConstants.swift */; };
+		82A80EB32C6647EF005CDDB5 /* MealRecipeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A80EB22C6647EF005CDDB5 /* MealRecipeConstants.swift */; };
 		82D0034F2C64023200D604A1 /* MealRecipeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D0034E2C64023200D604A1 /* MealRecipeViewController.swift */; };
 		82FBDE862C65403C00E32AC1 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FBDE852C65403C00E32AC1 /* Router.swift */; };
 /* End PBXBuildFile section */
@@ -34,7 +37,7 @@
 		8211ED8F2C557CD2007E901E /* MealResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MealResponse.swift; path = ../../../../../../../Documents/MealResponse.swift; sourceTree = "<group>"; };
 		8211ED912C557CEE007E901E /* MealRecipeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MealRecipeResponse.swift; path = ../../../../../../../Documents/MealRecipeResponse.swift; sourceTree = "<group>"; };
 		825A64402C65757800A60C6E /* MealRecipePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealRecipePresenter.swift; sourceTree = "<group>"; };
-		825A64432C6578EA00A60C6E /* SourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceViewController.swift; sourceTree = "<group>"; };
+		825A64432C6578EA00A60C6E /* WebSourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSourceViewController.swift; sourceTree = "<group>"; };
 		8266A4AD2C4FF162007939B1 /* RecipeApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecipeApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8266A4B02C4FF162007939B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8266A4B22C4FF162007939B1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -52,6 +55,9 @@
 		82A44DAD2C526A8B00324CF6 /* Meal+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Meal+CoreDataClass.swift"; sourceTree = "<group>"; };
 		82A44DAE2C526A8B00324CF6 /* Meal+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Meal+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		82A44DD42C54243700324CF6 /* MealCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealCollectionViewCell.swift; sourceTree = "<group>"; };
+		82A80EAA2C664263005CDDB5 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		82A80EAF2C6645B4005CDDB5 /* MealListConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealListConstants.swift; sourceTree = "<group>"; };
+		82A80EB22C6647EF005CDDB5 /* MealRecipeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealRecipeConstants.swift; sourceTree = "<group>"; };
 		82D0034E2C64023200D604A1 /* MealRecipeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealRecipeViewController.swift; sourceTree = "<group>"; };
 		82FBDE852C65403C00E32AC1 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -93,18 +99,18 @@
 			path = Presenter;
 			sourceTree = "<group>";
 		};
-		825A64422C6578CC00A60C6E /* SourceModule */ = {
+		825A64422C6578CC00A60C6E /* WebSourceModule */ = {
 			isa = PBXGroup;
 			children = (
-				825A64432C6578EA00A60C6E /* SourceViewController.swift */,
+				825A64432C6578EA00A60C6E /* WebSourceViewController.swift */,
 			);
-			path = SourceModule;
+			path = WebSourceModule;
 			sourceTree = "<group>";
 		};
 		825A64452C65793400A60C6E /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				825A64422C6578CC00A60C6E /* SourceModule */,
+				825A64422C6578CC00A60C6E /* WebSourceModule */,
 				82A44D812C5186E800324CF6 /* MealRecipeModule */,
 				82A44D822C51871400324CF6 /* MealListModule */,
 			);
@@ -138,6 +144,7 @@
 				82A44DAB2C526A4D00324CF6 /* DataManager.swift */,
 				8211ED8D2C557CAA007E901E /* NetworkLayer */,
 				82A44DA62C5269F500324CF6 /* DataModel.xcdatamodeld */,
+				82A80EAE2C6642CB005CDDB5 /* Other */,
 				8266A4B92C4FF168007939B1 /* Assets.xcassets */,
 				8266A4BB2C4FF168007939B1 /* LaunchScreen.storyboard */,
 				8266A4BE2C4FF168007939B1 /* Info.plist */,
@@ -198,6 +205,24 @@
 				82A44D882C51885D00324CF6 /* MealInfo.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		82A80EAE2C6642CB005CDDB5 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				82A80EB12C6647D0005CDDB5 /* Constants */,
+				82A80EAA2C664263005CDDB5 /* Extensions.swift */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
+		82A80EB12C6647D0005CDDB5 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				82A80EAF2C6645B4005CDDB5 /* MealListConstants.swift */,
+				82A80EB22C6647EF005CDDB5 /* MealRecipeConstants.swift */,
+			);
+			path = Constants;
 			sourceTree = "<group>";
 		};
 		82D0034D2C6401E700D604A1 /* View */ = {
@@ -278,13 +303,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82A80EB32C6647EF005CDDB5 /* MealRecipeConstants.swift in Sources */,
 				8266A4B52C4FF162007939B1 /* MealListViewController.swift in Sources */,
 				82A44DAC2C526A4D00324CF6 /* DataManager.swift in Sources */,
+				82A80EB02C6645B4005CDDB5 /* MealListConstants.swift in Sources */,
 				82A44DD52C54243700324CF6 /* MealCollectionViewCell.swift in Sources */,
 				82A44D892C51885D00324CF6 /* MealInfo.swift in Sources */,
 				82FBDE862C65403C00E32AC1 /* Router.swift in Sources */,
 				82A44D942C523D6D00324CF6 /* ModuleBullder.swift in Sources */,
-				825A64442C6578EA00A60C6E /* SourceViewController.swift in Sources */,
+				825A64442C6578EA00A60C6E /* WebSourceViewController.swift in Sources */,
 				8266A4B12C4FF162007939B1 /* AppDelegate.swift in Sources */,
 				825A64412C65757800A60C6E /* MealRecipePresenter.swift in Sources */,
 				82A44D872C51882C00324CF6 /* MealRecipe.swift in Sources */,
@@ -293,6 +320,7 @@
 				8211ED902C557CD2007E901E /* MealResponse.swift in Sources */,
 				82A44DAF2C526A8B00324CF6 /* Meal+CoreDataClass.swift in Sources */,
 				8211ED922C557CEE007E901E /* MealRecipeResponse.swift in Sources */,
+				82A80EAB2C664263005CDDB5 /* Extensions.swift in Sources */,
 				82A44DB02C526A8B00324CF6 /* Meal+CoreDataProperties.swift in Sources */,
 				82A44D8B2C518BCD00324CF6 /* MealListPresenter.swift in Sources */,
 				82A44D8E2C519B6400324CF6 /* NetworkService.swift in Sources */,
