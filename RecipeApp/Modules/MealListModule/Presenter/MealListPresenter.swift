@@ -15,7 +15,7 @@ protocol MealListViewProtocol: AnyObject {
 
 protocol MealListViewPresenterProtocol: AnyObject {
     init(view: MealListViewProtocol, router: RouterProtocol)
-    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool)
+    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool, completion: @escaping () -> Void)
     func getMeal(of number: Int) -> Meal?
     func getMealCount() -> Int
     func goToRecipeScreen(with number: Int)
@@ -31,7 +31,7 @@ class MealListPresenter: MealListViewPresenterProtocol {
         self.router = router
     }
     
-    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool) {
+    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool, completion: @escaping () -> Void) {
         var meals = [MealInfo]()
         let group = DispatchGroup()
         
@@ -50,22 +50,23 @@ class MealListPresenter: MealListViewPresenterProtocol {
             }
         }
         
-        group.notify(queue: .global(qos: .userInitiated)) {
+        group.notify(queue: .global(qos: .utility)) {
             let isRequestSuccessful = !meals.isEmpty
 
             if isRequestSuccessful {
                 self.saveToLocal(meals, with: isDataToBeOverwritten)
             }
             DispatchQueue.main.async {
+                completion()
                 self.view?.showList()
-            }
-            if isRequestSuccessful {
-                self.downloadPictures(for: meals)
             }
             if isAlertShouldBeShown && !isRequestSuccessful {
                 DispatchQueue.main.async {
                     self.view?.showAlert(message: "Unable to load new recipes")
                 }
+            }
+            if isRequestSuccessful {
+                self.downloadPictures(for: meals)
             }
         }
     }
@@ -83,10 +84,8 @@ class MealListPresenter: MealListViewPresenterProtocol {
     func goToRecipeScreen(with number: Int) {
         guard let meal = DataManager.shared.fetchMeal(of: number) else {return}
         let id = meal.id
-        print(Thread.current)
         NetworkService.shared.getMealRecipe(of: id) { result in
             
-            print(Thread.current)
             print("RecipeScreen")
             switch result {
             case .success(let mealRecipeResponse):
@@ -108,7 +107,7 @@ class MealListPresenter: MealListViewPresenterProtocol {
 extension MealListPresenter {
     
     private func saveToLocal(_ meals: [MealInfo], with isDataToBeOverwritten: Bool) {
-        let queue = DispatchQueue(label: "golovachev-vladislav-SerialQueue", qos: .userInitiated)
+        let queue = DispatchQueue(label: "golovachev-vladislav-SerialQueue", qos: .utility)
         if isDataToBeOverwritten {
             queue.async {
                 DataManager.shared.clear()
@@ -131,14 +130,16 @@ extension MealListPresenter {
                     }
                 case .failure(let error):
                     print(error.localizedDescription)
+                    print("IMMM HEEERE")
                 }
             }
         }
     }
     
+    
     private func updateMealData(index: Int, data: Data?, completion: @escaping () -> Void) {
         let concurrentQueue = DispatchQueue(label: "golovachev-vladislav-ConcurrentQueue",
-                                            qos: .userInitiated,
+                                            qos: .utility,
                                             attributes: .concurrent)
         let workItemUpdate = DispatchWorkItem {
             if let data, let compressedData = self.compressedPictureData(of: data) {
