@@ -30,6 +30,7 @@
 		82A80EB02C6645B4005CDDB5 /* MealListConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A80EAF2C6645B4005CDDB5 /* MealListConstants.swift */; };
 		82A80EB32C6647EF005CDDB5 /* MealRecipeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A80EB22C6647EF005CDDB5 /* MealRecipeConstants.swift */; };
 		82A80EB72C692751005CDDB5 /* ActivityIndicatorCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A80EB62C692751005CDDB5 /* ActivityIndicatorCollectionViewCell.swift */; };
+		82A925292C714E6700DE0138 /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A925282C714E6700DE0138 /* ViewState.swift */; };
 		82D0034F2C64023200D604A1 /* MealRecipeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D0034E2C64023200D604A1 /* MealRecipeViewController.swift */; };
 		82FBDE862C65403C00E32AC1 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82FBDE852C65403C00E32AC1 /* Router.swift */; };
 /* End PBXBuildFile section */
@@ -60,6 +61,7 @@
 		82A80EAF2C6645B4005CDDB5 /* MealListConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealListConstants.swift; sourceTree = "<group>"; };
 		82A80EB22C6647EF005CDDB5 /* MealRecipeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealRecipeConstants.swift; sourceTree = "<group>"; };
 		82A80EB62C692751005CDDB5 /* ActivityIndicatorCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorCollectionViewCell.swift; sourceTree = "<group>"; };
+		82A925282C714E6700DE0138 /* ViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewState.swift; path = Presenter/ViewState.swift; sourceTree = "<group>"; };
 		82D0034E2C64023200D604A1 /* MealRecipeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealRecipeViewController.swift; sourceTree = "<group>"; };
 		82FBDE852C65403C00E32AC1 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -178,6 +180,7 @@
 				82A44D852C51873900324CF6 /* Model */,
 				82A44D832C51871F00324CF6 /* View */,
 				82A44D842C51872900324CF6 /* Presenter */,
+				82A925282C714E6700DE0138 /* ViewState.swift */,
 			);
 			path = MealListModule;
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 				82A44D872C51882C00324CF6 /* MealRecipe.swift in Sources */,
 				8266A4B32C4FF162007939B1 /* SceneDelegate.swift in Sources */,
 				82A44DA82C5269F500324CF6 /* DataModel.xcdatamodeld in Sources */,
+				82A925292C714E6700DE0138 /* ViewState.swift in Sources */,
 				8211ED902C557CD2007E901E /* MealResponse.swift in Sources */,
 				82A44DAF2C526A8B00324CF6 /* Meal+CoreDataClass.swift in Sources */,
 				8211ED922C557CEE007E901E /* MealRecipeResponse.swift in Sources */,

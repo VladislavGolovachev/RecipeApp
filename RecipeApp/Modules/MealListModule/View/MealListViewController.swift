@@ -10,9 +10,8 @@ import UIKit
 class MealListViewController: UIViewController {
 
     var presenter: MealListViewPresenterProtocol?
-    var cellSize: CGSize?
-    var isUpdatingUI = false
-    var isRefreshing = false
+    private var cellSize: CGSize?
+    private var viewState = ViewState.none
     
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -46,7 +45,10 @@ class MealListViewController: UIViewController {
         self.view.addSubview(collectionView)
         setupConstraints()
         
-        self.presenter?.downloadMeals(isDataToBeOverwritten: true, isAlertShouldBeShown: true) {}
+        viewState = .updating
+        self.presenter?.downloadMeals(isDataToBeOverwritten: true, isAlertShouldBeShown: true) { [weak self] in
+            self?.viewState = .none
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -60,12 +62,11 @@ class MealListViewController: UIViewController {
     }
 }
 
-//MARK: Constraints
 extension MealListViewController {
     
     func setupConstraints() {
         let safeArea = self.view.safeAreaLayoutGuide
-        
+
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             self.collectionView.topAnchor.constraint(equalTo: safeArea.topAnchor),
@@ -76,13 +77,12 @@ extension MealListViewController {
     }
     
     @objc func refreshAction(_ sender: UIRefreshControl) {
-        if isRefreshing {
+        if viewState.rawValue >= ViewState.refreshing.rawValue {
             return
         }
-        isRefreshing = true
-        URLSession.shared.cancelAllTasks()
+        viewState = .refreshing
         self.presenter?.downloadMeals(isDataToBeOverwritten: true, isAlertShouldBeShown: true) { [weak self] in
-            self?.isRefreshing = false
+            self?.viewState = .none
             sender.endRefreshing()
         }
     }
@@ -91,18 +91,17 @@ extension MealListViewController {
 extension MealListViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return (self.presenter?.getMealCount() ?? -1) + 1
+        return (self.presenter?.getMealCount() ?? 0) + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if indexPath.row == self.presenter?.getMealCount() {
+        if indexPath.row == collectionView.numberOfItems(inSection: 0) - 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ActivityIndicator", for: indexPath)
             as? ActivityIndicatorCollectionViewCell ?? ActivityIndicatorCollectionViewCell()
             cell.activityIndicator.startAnimating()
             return cell
         }
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Meal", for: indexPath)
         as? MealCollectionViewCell ?? MealCollectionViewCell()
         
@@ -117,25 +116,37 @@ extension MealListViewController: UICollectionViewDataSource {
         
         return cell
     }
-    
+}
+
+extension MealListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if viewState == .presenting {
+            return
+        }
         let index = indexPath.row
-        self.presenter?.goToRecipeScreen(with: index)
+        
+        viewState = .presenting
+        self.presenter?.goToRecipeScreen(with: index) { [weak self] in
+            self?.viewState = .none
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard indexPath.row + 2 == self.presenter!.getMealCount() + 1 else {return}
-        
-        print(indexPath)
+        if indexPath.row != collectionView.numberOfItems(inSection: 0) - 1 || viewState != .none {
+            return
+        }
+        viewState = .updating
+        self.presenter?.downloadMeals(isDataToBeOverwritten: false, isAlertShouldBeShown: false) { [weak self] in
+            self?.viewState = .none
+        }
     }
 }
 
 extension MealListViewController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.row == self.presenter?.getMealCount() {
+        if indexPath.row == collectionView.numberOfItems(inSection: 0) - 1 {
             return CGSize(width: collectionView.contentSize.width, height: 40)
         }
         return cellSize ?? CGSizeZero
@@ -143,6 +154,7 @@ extension MealListViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension MealListViewController: MealListViewProtocol {
+    var isUIUpdating: Bool {viewState == .updating}
     
     func showList() {
         self.collectionView.reloadData()
@@ -165,17 +177,16 @@ extension MealListViewController: MealListViewProtocol {
 
 extension MealListViewController: UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        if isUpdatingUI {
+        if viewState != .none {
             return
         }
         guard let maxRow = indexPaths.max(by: {$0.row < $1.row})?.row else {return}
-        let count = self.presenter?.getMealCount() ?? maxRow
+        let count = collectionView.numberOfItems(inSection: 0)
         
         if maxRow >= count - 3 {
-            isUpdatingUI = true
-            print("NewCells")
+            viewState = .updating
             self.presenter?.downloadMeals(isDataToBeOverwritten: false, isAlertShouldBeShown: false) { [weak self] in
-                self?.isUpdatingUI = false
+                self?.viewState = .none
             }
         }
     }

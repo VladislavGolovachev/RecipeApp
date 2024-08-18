@@ -11,14 +11,15 @@ protocol MealListViewProtocol: AnyObject {
     func showList()
     func updateList(at row: Int)
     func showAlert(message: String)
+    var isUIUpdating: Bool {get}
 }
 
 protocol MealListViewPresenterProtocol: AnyObject {
     init(view: MealListViewProtocol, router: RouterProtocol)
-    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool, completion: @escaping () -> Void)
+    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool, viewStateHandler: @escaping () -> Void)
     func getMeal(of number: Int) -> Meal?
     func getMealCount() -> Int
-    func goToRecipeScreen(with number: Int)
+    func goToRecipeScreen(with number: Int, viewStateHandler: @escaping () -> Void)
 }
 
 class MealListPresenter: MealListViewPresenterProtocol {
@@ -31,7 +32,10 @@ class MealListPresenter: MealListViewPresenterProtocol {
         self.router = router
     }
     
-    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool, completion: @escaping () -> Void) {
+    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool, viewStateHandler: @escaping () -> Void) {
+        if isDataToBeOverwritten && isAlertShouldBeShown {
+            URLSession.shared.cancelAllTasks()
+        }
         var meals = [MealInfo]()
         let group = DispatchGroup()
         
@@ -52,12 +56,11 @@ class MealListPresenter: MealListViewPresenterProtocol {
         
         group.notify(queue: .global(qos: .utility)) {
             let isRequestSuccessful = !meals.isEmpty
-
             if isRequestSuccessful {
                 self.saveToLocal(meals, with: isDataToBeOverwritten)
             }
             DispatchQueue.main.async {
-                completion()
+                viewStateHandler()
                 self.view?.showList()
             }
             if isAlertShouldBeShown && !isRequestSuccessful {
@@ -81,23 +84,25 @@ class MealListPresenter: MealListViewPresenterProtocol {
         return count
     }
 
-    func goToRecipeScreen(with number: Int) {
+    func goToRecipeScreen(with number: Int, viewStateHandler: @escaping () -> Void) {
         guard let meal = DataManager.shared.fetchMeal(of: number) else {return}
+        URLSession.shared.suspendAllTasks()
         let id = meal.id
-        NetworkService.shared.getMealRecipe(of: id) { result in
+        let sharedSession = URLSession.shared
+        NetworkService.shared.getMealRecipe(of: id) { [weak self, sharedSession] result in
+            sharedSession.resumeAllTasks()
             
-            print("RecipeScreen")
             switch result {
             case .success(let mealRecipeResponse):
                 guard let mealRecipe = mealRecipeResponse.recipes.first else {return}
                 DispatchQueue.main.async {
-                    self.router?.showMealRecipeController(mealRecipe: mealRecipe)
+                    self?.router?.showMealRecipeController(mealRecipe: mealRecipe)
+                    viewStateHandler()
                 }
-                
             case .failure(let error):
                 print(error.localizedDescription)
                 DispatchQueue.main.async {
-                    self.view?.showAlert(message: "Unable to show recipe")
+                    self?.view?.showAlert(message: "Unable to show recipe")
                 }
             }
         }
@@ -121,21 +126,21 @@ extension MealListPresenter {
     private func downloadPictures(for meals: [MealInfo]) {
         let count = self.getMealCount()
         for (index, meal) in meals.enumerated() {
-            NetworkService.shared.downloadPhotoData(by: meal.photoString) { result in
-                print("Downloading pictures \(index)")
+            NetworkService.shared.downloadPhotoData(by: meal.photoString) { [weak self] result in
                 switch result {
                 case .success(let data):
-                    self.updateMealData(index: index + count - 18, data: data) {
-                        self.view?.updateList(at: index + count - 18)
+                    let ind = index + count - 18
+                    self?.updateMealData(index: ind, data: data) { [weak self] in
+                        if let isUpdating = self?.view?.isUIUpdating, !isUpdating {
+                            self?.view?.updateList(at: ind)
+                        }
                     }
                 case .failure(let error):
                     print(error.localizedDescription)
-                    print("IMMM HEEERE")
                 }
             }
         }
     }
-    
     
     private func updateMealData(index: Int, data: Data?, completion: @escaping () -> Void) {
         let concurrentQueue = DispatchQueue(label: "golovachev-vladislav-ConcurrentQueue",
@@ -143,8 +148,7 @@ extension MealListPresenter {
                                             attributes: .concurrent)
         let workItemUpdate = DispatchWorkItem {
             if let data, let compressedData = self.compressedPictureData(of: data) {
-                DataManager.shared.updateMeal(of: index,
-                                              with: compressedData)
+                DataManager.shared.updateMeal(of: index, with: compressedData)
             }
         }
         concurrentQueue.async(execute: workItemUpdate)
