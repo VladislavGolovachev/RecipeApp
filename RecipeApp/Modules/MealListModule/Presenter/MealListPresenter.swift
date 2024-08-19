@@ -11,29 +11,32 @@ protocol MealListViewProtocol: AnyObject {
     func showList()
     func updateList(at row: Int)
     func showAlert(message: String)
-    var isUIUpdating: Bool {get}
 }
 
 protocol MealListViewPresenterProtocol: AnyObject {
     init(view: MealListViewProtocol, router: RouterProtocol)
-    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool, viewStateHandler: @escaping () -> Void)
+    var isDeviceConnectedToInternet: Bool {get}
+    func downloadMeals(isDataToBeOverwritten: Bool, shouldAlertBeShown: Bool, viewStateHandler: @escaping () -> Void)
     func getMeal(of number: Int) -> Meal?
     func getMealCount() -> Int
     func goToRecipeScreen(with number: Int, viewStateHandler: @escaping () -> Void)
 }
 
 class MealListPresenter: MealListViewPresenterProtocol {
+    private let downloadPhotoSemaphore = DispatchSemaphore(value: 8)
+    private var isDataResaved = false, isConnectedToInternet = true
     
     weak var view: MealListViewProtocol?
     var router: RouterProtocol?
+    var isDeviceConnectedToInternet: Bool {isConnectedToInternet}
     
     required init(view: MealListViewProtocol, router: RouterProtocol) {
         self.view = view
         self.router = router
     }
     
-    func downloadMeals(isDataToBeOverwritten: Bool, isAlertShouldBeShown: Bool, viewStateHandler: @escaping () -> Void) {
-        if isDataToBeOverwritten && isAlertShouldBeShown {
+    func downloadMeals(isDataToBeOverwritten: Bool, shouldAlertBeShown: Bool, viewStateHandler: @escaping () -> Void) {
+        if isDataToBeOverwritten {
             URLSession.shared.cancelAllTasks()
         }
         var meals = [MealInfo]()
@@ -57,13 +60,18 @@ class MealListPresenter: MealListViewPresenterProtocol {
         group.notify(queue: .global(qos: .utility)) {
             let isRequestSuccessful = !meals.isEmpty
             if isRequestSuccessful {
+                self.isConnectedToInternet = true
+                self.isDataResaved = true
                 self.saveToLocal(meals, with: isDataToBeOverwritten)
+            } else {
+                self.isConnectedToInternet = false
             }
             DispatchQueue.main.async {
                 viewStateHandler()
                 self.view?.showList()
+                self.isDataResaved = false
             }
-            if isAlertShouldBeShown && !isRequestSuccessful {
+            if shouldAlertBeShown && !isRequestSuccessful {
                 DispatchQueue.main.async {
                     self.view?.showAlert(message: "Unable to load new recipes")
                 }
@@ -103,6 +111,7 @@ class MealListPresenter: MealListViewPresenterProtocol {
                 print(error.localizedDescription)
                 DispatchQueue.main.async {
                     self?.view?.showAlert(message: "Unable to show recipe")
+                    viewStateHandler()
                 }
             }
         }
@@ -126,18 +135,20 @@ extension MealListPresenter {
     private func downloadPictures(for meals: [MealInfo]) {
         let count = self.getMealCount()
         for (index, meal) in meals.enumerated() {
+            downloadPhotoSemaphore.wait()
             NetworkService.shared.downloadPhotoData(by: meal.photoString) { [weak self] result in
                 switch result {
                 case .success(let data):
                     let ind = index + count - 18
                     self?.updateMealData(index: ind, data: data) { [weak self] in
-                        if let isUpdating = self?.view?.isUIUpdating, !isUpdating {
+                        if let isDataResaved = self?.isDataResaved, !isDataResaved {
                             self?.view?.updateList(at: ind)
                         }
                     }
                 case .failure(let error):
                     print(error.localizedDescription)
                 }
+                self?.downloadPhotoSemaphore.signal()
             }
         }
     }

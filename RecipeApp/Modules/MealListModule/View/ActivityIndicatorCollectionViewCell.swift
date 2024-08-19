@@ -13,6 +13,7 @@ class ActivityIndicatorCollectionViewCell: UICollectionViewCell {
         activityIndicator.color = .lightGray
         activityIndicator.style = .medium
         activityIndicator.hidesWhenStopped = true
+        activityIndicator.isHidden = true
         return activityIndicator
     }()
     

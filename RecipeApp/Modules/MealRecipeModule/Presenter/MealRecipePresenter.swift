@@ -36,6 +36,7 @@ final class MealRecipePresenter: MealRecipeViewPresenterProtocol {
         if let link = mealRecipe.sourceLink {
             self.router.showWebSourceController(link: link)
         }
+        
     }
     
     func getMealAttribute(_ attribute: MealAttribute) -> String {

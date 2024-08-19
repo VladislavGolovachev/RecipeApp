@@ -9,6 +9,14 @@ import UIKit
 import WebKit
 
 class MealRecipeViewController: UIViewController {
+    private var activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView(style: .large)
+        activityIndicator.isHidden = true
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.color = .systemCyan
+        
+        return activityIndicator
+    }()
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.backgroundColor = MealRecipeConstants.Color.background
@@ -108,12 +116,14 @@ extension MealRecipeViewController {
         stackView.addArrangedSubview(instructionTextView)
         stackView.addArrangedSubview(ingredientsLabel)
         stackView.addArrangedSubview(ingredientsTextView)
+        self.view.addSubview(activityIndicator)
     }
     
     private func setupConstraints() {
         let safeAreaGuide = self.view.safeAreaLayoutGuide
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: safeAreaGuide.topAnchor),
@@ -125,17 +135,38 @@ extension MealRecipeViewController {
             stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, multiplier: 1.0)
+            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, multiplier: 1.0),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
 }
 
+//MARK: Private functions
 extension MealRecipeViewController {
-    @objc func linkLabelTap(_ sender: UILabel) {
-        self.presenter?.loadLink()
+    @objc private func linkLabelTap(_ sender: UILabel) {
+        
+        linkLabel.isUserInteractionEnabled = false
+        activityIndicator.startAnimating()
+        activityIndicator.isHidden = false
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.linkLabel.layer.backgroundColor = UIColor.lightGray.cgColor
+        }
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.linkLabel.layer.backgroundColor = MealRecipeConstants.Color.background.cgColor
+        }
+        
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            self?.presenter?.loadLink()
+            self?.linkLabel.isUserInteractionEnabled = true
+            self?.activityIndicator.stopAnimating()
+        }
     }
 }
 
+//MARK: MealRecipeViewProtocol
 extension MealRecipeViewController: MealRecipeViewProtocol {
     func showSourceLink() {
         stackView.addArrangedSubview(sourceLabel)
